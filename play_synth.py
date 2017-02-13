@@ -18,12 +18,12 @@ def main():
     """Setup the resampling and audio output callbacks and start playback."""
 
     print("Playing back...  Ctrl+C to stop.")
-    with soundbridge.Soundbridge(samplerate) as sb:
-        sb.output_processor = soundbridge.FMOutputProcessor()
+    with soundbridge.Soundbridge(samplerate) as bridge:
+        bridge.output_processor = soundbridge.FMOutputProcessor()
         try:
             while True:
                 samples = read_samples(0.050)
-                sb.push_samples(samples)
+                bridge.push_samples(samples)
         except KeyboardInterrupt:
             print("Aborting.")
 
