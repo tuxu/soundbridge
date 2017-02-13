@@ -8,8 +8,32 @@ from fifo import FIFO
 
 
 class OutputProcessor(object):
-    input_gain = 20.  # Input gain (1/input sample unit)
-    output_volume = 0.1  # Output volume
+    """Basic output processor.
+
+    Passes samples through by multiplying with `input_gain` and `output_volume`.
+    """
+
+    def __init__(self, input_gain=1.0, output_volume=1.0):
+        self._input_gain = input_gain
+        self._output_volume = output_volume
+
+    @property
+    def input_gain(self):
+        """Input gain."""
+        return self._input_gain
+
+    @input_gain.setter
+    def input_gain(self, gain):
+        self._input_gain = gain
+
+    @property
+    def output_volume(self):
+        """Output volume."""
+        return self._output_volume
+
+    @output_volume.setter
+    def output_volume(self, volume):
+        self._output_volume = volume
 
     def process(self, samples, _samplerate, **_kwargs):
         """Process output samples."""
@@ -17,10 +41,23 @@ class OutputProcessor(object):
 
 
 class FMOutputProcessor(OutputProcessor):
-    carrier_frequency = 500  # Carrier frequency (Hz)
+    """Frequency modulating output processor.
 
-    def __init__(self, ):
+    Modulates samples onto a carrier frequency.
+    """
+    def __init__(self, input_gain=1.0, output_volume=1.0, carrier_frequency=500):
+        super(FMOutputProcessor, self).__init__(input_gain, output_volume)
+        self._carrier_frequency = carrier_frequency
         self._last_fmphase = 0
+
+    @property
+    def carrier_frequency(self):
+        """Carrier frequency (Hz)."""
+        return self._carrier_frequency
+
+    @carrier_frequency.setter
+    def carrier_frequency(self, frequency):
+        self._carrier_frequency = frequency
 
     def process(self, samples, samplerate, **kwargs):
         """Perform frequency modulation with samples and return output samples.
@@ -60,6 +97,7 @@ class Soundbridge(object):
 
     @property
     def output_processor(self):
+        """Output processor."""
         return self._output_processor
 
     @output_processor.setter
@@ -81,8 +119,8 @@ class Soundbridge(object):
     def _output_callback(self, outdata, frames, time, status):
         """Output callback.
 
-        Read samples from the resampler, optionally modulate them onto a carrier
-        frequency, and write them into the output buffer `outdata`.
+        Read samples from the resampler, turn them into output samples (via an
+        output processor), and write them into the output buffer `outdata`.
         """
         samples = self._resampler.read(frames)
         samples = np.pad(samples, (0, frames - len(samples)), mode='constant')
@@ -90,9 +128,11 @@ class Soundbridge(object):
             samples, self._output_samplerate, time=time, status=status)
 
     def start(self):
+        """Start output stream."""
         self._outstream.start()
 
     def stop(self):
+        """Stop output stream."""
         self._outstream.stop()
 
     def __enter__(self):
