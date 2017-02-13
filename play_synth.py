@@ -8,9 +8,12 @@ samplerate = 4000.
 
 def read_samples(poll_length):
     from time import sleep
+    start_time = getattr(read_samples, 'start_time', 0)
     num_samples = int(poll_length * samplerate)
-    samples = np.zeros(num_samples)
+    time = start_time + np.arange(num_samples) / samplerate
+    samples = 10 * np.sin(2 * np.pi * 3 * time)
     sleep(poll_length)
+    read_samples.start_time = time[-1] + 1.0 / samplerate
     return samples
 
 
