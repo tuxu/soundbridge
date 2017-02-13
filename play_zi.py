@@ -14,7 +14,7 @@ default_params = {
     'volume': 0.1, # Output volume
     'pll': 0,  # PLL used to query center frequency
     'carrier_frequency': 500,  # FM carrier frequency
-    'modulation': True,  # Perform frequency modulation?
+    'modulation': False,  # Perform frequency modulation?
     'highpass': True,  # Filter the input signal?
 }
 
@@ -121,30 +121,30 @@ def print_parameters(params):
 
 
 @click.command()
-@click.argument('device', default=default_device)
+@click.argument('device', type=click.STRING)
 @click.option('--samplerate', '-r', default=default_params['samplerate'],
-              help='sample rate (Hz)')
+              help='Sample rate (Hz). (default: 3600)')
 @click.option('--demod', '-d', default=default_params['demod'],
               type=click.IntRange(0, 6),
-              help='input demodulator')
+              help='Input demodulator. (default: 0)')
 @click.option('--signal', '-s', default=default_params['signal'],
               type=click.Choice(valid_signals),
-              help='input demod signal, e.g. x, frequency')
+              help='Input demod signal. (default: x)')
 @click.option('--gain', '-g', default=default_params['gain'],
-              help='input gain')
+              help='Input gain. (default: 1)')
 @click.option('--volume', '-v', default=default_params['volume'],
-              help='output volume')
+              help='Output volume. (default: 0.1)')
 @click.option('--pll', '-p', default=default_params['pll'],
               type=click.IntRange(0, 2),
-              help='PLL to read center frequency (frequency input only)')
+              help='PLL to read center frequency. (default: 0)')
 @click.option('--carrier-frequency', '-f', default=default_params['carrier_frequency'],
-              help='FM carrier frequency')
+              help='FM carrier frequency (Hz). (default: 500)')
 @click.option('--modulation/--no-modulation', '+m/-m',
               default=default_params['modulation'],
-              help='Perform frequncy modulation?')
+              help='Perform frequency modulation? (default: no)')
 @click.option('--highpass/--no-highpass', '+h/-h',
               default=default_params['highpass'],
-              help='Filter input signal?')
+              help='Filter input signal? (default: yes)')
 def main(device=None, **kwargs):
     """Route a signal from a Zurich Instruments lock-in amplifier (DEVICE) to
        the standard sound output.
