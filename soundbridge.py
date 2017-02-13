@@ -11,7 +11,7 @@ class OutputProcessor(object):
     input_gain = 20.  # Input gain (1/input sample unit)
     output_volume = 0.1  # Output volume
 
-    def process(self, samples, samplerate, frames, time, status):
+    def process(self, samples, _samplerate, **_kwargs):
         """Process output samples."""
         return self.output_volume * self.input_gain * samples
 
@@ -22,13 +22,14 @@ class FMOutputProcessor(OutputProcessor):
     def __init__(self, ):
         self._last_fmphase = 0
 
-    def process(self, samples, samplerate, frames, time, status):
+    def process(self, samples, samplerate, **kwargs):
         """Perform frequency modulation with samples and return output samples.
 
         """
         samples = self.input_gain * samples
-        t = time.outputBufferDacTime + np.arange(frames) / samplerate
-        phase = 2 * np.pi * self.carrier_frequency * t
+        time = (kwargs['time'].outputBufferDacTime +
+                np.arange(samples.size) / samplerate)
+        phase = 2 * np.pi * self.carrier_frequency * time
         fmphase = (self._last_fmphase +
                    2 * np.pi * np.cumsum(samples) / samplerate)
         output_samples = np.cos(phase + fmphase)
@@ -86,7 +87,7 @@ class Soundbridge(object):
         samples = self._resampler.read(frames)
         samples = np.pad(samples, (0, frames - len(samples)), mode='constant')
         outdata[:, 0] = self._output_processor.process(
-            samples, self._output_samplerate, frames, time, status)
+            samples, self._output_samplerate, time=time, status=status)
 
     def start(self):
         self._outstream.start()
