@@ -6,6 +6,8 @@ import numpy as np
 import soundbridge
 from pynput import keyboard
 
+__version__ = '0.1.0'
+
 default_device = 'dev823'
 default_params = {
     'samplerate': 3600,  # Sample rate (Hz)
@@ -148,9 +150,12 @@ def print_parameters(params):
 @click.option('--highpass/--no-highpass', '+h/-h',
               default=default_params['highpass'],
               help='Filter input signal? (default: yes)')
+@click.version_option(version=__version__)
 def main(device=None, **kwargs):
     """Route a signal from a Zurich Instruments lock-in amplifier (DEVICE) to
-       the standard sound output.
+    the standard sound output.
+
+    (c) 2017 Tino Wagner <tiwagner@ethz.ch>, Nanotechnology Group, ETH Zurich
     """
     click.echo('{} {}'.format(click.style('Device:', bold=True), device))
 

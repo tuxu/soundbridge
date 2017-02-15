@@ -61,4 +61,4 @@ Modulate frequency shift of demod 0 on `dev###` with a 20x ∆f gain onto a 500 
 This project is licensed under the MIT license. See [LICENSE.md](LICENSE.md) for
 details.
 
-© 2017 [Tino Wagner](http://www.tinowagner.com/)
+© 2017 [Tino Wagner](http://www.tinowagner.com/), Nanotechnology Group, ETH Zurich
