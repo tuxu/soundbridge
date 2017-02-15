@@ -4,6 +4,7 @@ from __future__ import print_function, division
 import click
 import numpy as np
 import soundbridge
+from pynput import keyboard
 
 default_device = 'dev823'
 default_params = {
@@ -162,13 +163,18 @@ def main(device=None, **kwargs):
             raise KeyError('Invalid parameter: {}'.format(key))
 
     print_parameters(params)
+    click.echo('')
 
     input_sampler = InputSampler(device, params)
     input_sampler.setup()
 
     click.echo(
         '{}  {}'.format(click.style('Playing back...', fg='green'),
-                        click.style('Ctrl+C to stop.', fg='white')))
+                        click.style('Press ESC to stop.', fg='white')))
+
+    def on_release(key):
+        if key == keyboard.Key.esc:
+            return False
 
     with soundbridge.Soundbridge(params['samplerate']) as bridge:
         # Set up output processor
@@ -181,12 +187,12 @@ def main(device=None, **kwargs):
         output_processor.output_volume = params['volume']
         bridge.output_processor = output_processor
 
-        try:
-            while True:
+        with keyboard.Listener(on_release=on_release) as listener:
+            while listener.running:
                 samples = input_sampler.read(0.050)
                 bridge.push_samples(samples)
-        except KeyboardInterrupt:
-            click.echo(click.style('Aborting.', fg='red'))
+            click.echo(click.style('Stopping.', fg='red'))
+            listener.join()
 
 
 if __name__ == '__main__':
