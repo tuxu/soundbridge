@@ -22,11 +22,10 @@ valid_signals = ['x', 'y', 'frequency', 'phase', 'auxin0', 'auxin1']
 
 class InputSampler(object):
     def __init__(self, device, params):
-        self._device = device
+        self._device = str(device)
         self._params = params
         self._daq = None
         self._paths = {}
-        self._device = None
         self._freqcenter = 0
 
     def setup(self):
@@ -82,8 +81,11 @@ class InputSampler(object):
             num_samples = int(poll_length * params['samplerate'])
             return np.zeros(num_samples)
 
-        data = daq.poll(poll_length, poll_timeout=10, poll_flags=0,
-                        poll_return_flat_dict=True)
+        poll_timeout = 10
+        poll_flags = 0
+        poll_return_flat_dict = True
+        data = daq.poll(poll_length, poll_timeout, poll_flags,
+                        poll_return_flat_dict)
 
         # Update center frequency if changed
         if paths['freqcenter'] in data:
