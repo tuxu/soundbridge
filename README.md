@@ -1,4 +1,4 @@
-# zi-soundbridge
+# soundbridge
 
 Makes tiny signals audible using a [Zurich Instruments](http://zhinst.com)
 lock-in amplifier and your sound card 🔈.
@@ -38,6 +38,7 @@ session.
                                       Perform frequency modulation? (default: no)
       +h, --highpass / -h, --no-highpass
                                       Filter input signal? (default: yes)
+      --version                       Show the version and exit.
       --help                          Show this message and exit.
 
 Modulate frequency shift of demod 0 on `dev###` with a 20x ∆f gain onto a 500 Hz carrier:
@@ -54,11 +55,11 @@ Modulate frequency shift of demod 0 on `dev###` with a 20x ∆f gain onto a 500 
       FM carrier frequency (Hz): 500
       Perform frequency modulation? True
       Filter input signal? False
-    Playing back...  Ctrl+C to stop.
+    Playing back...  Press ESC to stop.
 
 ## License
 
 This project is licensed under the MIT license. See [LICENSE.md](LICENSE.md) for
 details.
 
-© 2017 [Tino Wagner](http://www.tinowagner.com/), Nanotechnology Group, ETH Zurich
+© 2017 Tino Wagner, ETH Zürich
