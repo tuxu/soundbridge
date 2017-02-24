@@ -14,7 +14,9 @@ session.
 
 ## Installation
 
-    pip install -r requirements.txt
+    $ git clone https://github.com/tuxu/soundbridge
+    $ cd soundbridge
+    $ pip install -r requirements.txt
 
 ## Usage
 
